@@ -1,0 +1,16 @@
+FROM maven:3.3-jdk-8
+
+
+RUN mkdir -p /tmp/build/
+
+ADD . /build/
+
+WORKDIR /build
+
+
+CMD mvn clean package -Dmaven.test.skip=true && \
+    echo "Build step 1/2 completed " && \
+    echo "Build step 2/2 completed " && \
+    mv /build/target /tmp/build/
+
+
