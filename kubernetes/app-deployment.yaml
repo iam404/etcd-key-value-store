@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: demo-iam404
+
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  template:
+    metadata:
+      labels:
+        app: app
+        component: web
+
+    spec:
+      containers:
+      - name: app
+        image: iam404/spring-etcd-config-store:stable
+        ports:
+        - containerPort: 9000
+        env:
+        - name: SERVE_PORT
+          value: "9000"
+        - name: ETCD_URL
+          value: "etcd"
+        - name: ETCD_PORT
+          value: "2379"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: demo-iam404
+  name: app-service
+spec:
+  type: NodePort
+  ports:
+  - name: app-port
+    port: 9000
+    protocol: TCP
+
+  selector:
+    app: app
+    component: web
